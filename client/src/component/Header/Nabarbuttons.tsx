@@ -6,14 +6,18 @@ import React from 'react'
 import BaseButton from '../button/BaseButton';
 
 import './NavbarComponent.css'; // Import the normal CSS
-
-
-import { handleLogin } from './HeaderHealper';
-import { handleRegister } from './HeaderHealper';
-import { handleLogout } from './HeaderHealper';
-
+import { useAuthHelpers } from './HeaderHealper';
+import { debounce } from '../../utils/debounc';
 
 const Nabarbuttons = () => {
+
+    const { handleLogin, handleRegister, handleLogout } = useAuthHelpers();
+
+     // Create debounced versions of the handlers
+     const debouncedHandleLogin = debounce(handleLogin, 300); // 300ms delay
+     const debouncedHandleRegister = debounce(handleRegister, 300);
+     const debouncedHandleLogout = debounce(handleLogout, 300);
+ 
   return (
     <div>
         <div className="button-container space-x-4"> {/* Added class for CSS targeting */}
@@ -23,7 +27,7 @@ const Nabarbuttons = () => {
                         textColor='white'
                         borderColor='border-white'
                         borderRadius='rounded-lg'
-                        onClick={handleLogin}
+                        onClick={ debouncedHandleLogin}
                     />
                     <BaseButton
                         text='Register'
@@ -31,7 +35,7 @@ const Nabarbuttons = () => {
                         textColor='white'
                         borderColor='border-white'
                         borderRadius='rounded-lg'
-                        onClick={handleRegister}
+                        onClick={debouncedHandleRegister}
                     />
                     <BaseButton
                         text='Logout'
@@ -39,7 +43,7 @@ const Nabarbuttons = () => {
                         textColor='white'
                         borderColor='border-white'
                         borderRadius='rounded-lg'
-                        onClick={handleLogout}
+                        onClick={debouncedHandleLogout}
                     />
                 </div>
     </div>
