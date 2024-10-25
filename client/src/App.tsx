@@ -1,19 +1,33 @@
-
-
-import { BrowserRouter,Routes} from "react-router-dom";
-
-
+import React, { Suspense, lazy } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavbarComponent from "./component/Header/NavbarComponent";
+
+// Lazy load pages for performance optimization
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+// const HomePage = lazy(() => import("./pages/HomePage")); // Assuming you have a HomePage
+// const NotFoundPage = lazy(() => import("./pages/NotFoundPage")); // Page for 404
+
 function App() {
   return (
     <div>
-        <BrowserRouter>
-           <NavbarComponent/>
-           <Routes>
-               
-           </Routes>
-        </BrowserRouter>
-  
+      <BrowserRouter>
+        {/* Navbar */}
+        <NavbarComponent />
+
+        {/* Suspense with fallback for lazy loading */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            {/* Route for home page */}
+           
+
+            {/* Route for login page */}
+            <Route path="/login" element={<LoginPage />} />
+
+            {/* Route for 404 (page not found) */}
+           
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
     </div>
   );
 }

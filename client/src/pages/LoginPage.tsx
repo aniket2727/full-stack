@@ -72,12 +72,12 @@ const LoginPage: React.FC = () => {
                     </button>
                 </form>
 
-                <h1 className="text-center mt-6 text-gray-700">Don't have an account?</h1>
+                <h1 className="text-center mt-6 text-green-700">Don't have an account? If not please register</h1>
 
                 {/* Register Button */}
                 <div className="flex justify-center mt-4">
                     <BaseButton
-                        text="Register"
+                        text="register"
                         onClick={handleRegister}
                         color="blue"
                         textColor="white"

@@ -31,7 +31,7 @@ const Nabarbuttons = () => {
                     />
                     <BaseButton
                         text='Register'
-                        color='blue'
+                        color='red'
                         textColor='white'
                         borderColor='border-white'
                         borderRadius='rounded-lg'
@@ -39,7 +39,7 @@ const Nabarbuttons = () => {
                     />
                     <BaseButton
                         text='Logout'
-                        color='green'
+                        color='red'
                         textColor='white'
                         borderColor='border-white'
                         borderRadius='rounded-lg'
