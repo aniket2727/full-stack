@@ -1,0 +1,20 @@
+/* NavbarComponent.css */
+
+.navbar {
+    padding: 16px; /* Adjust padding as needed */
+}
+
+.button-container {
+    display: flex;
+    flex-direction: row; /* Default to row layout */
+    gap: 16px; /* Space between buttons */
+}
+
+@media (max-width: 768px) { /* Media query for smaller screens */
+    .button-container {
+        flex-direction: row; /* Change to column layout on small screens */
+        align-items: center; /* Center buttons */
+        width: 100%; /* Full width */
+        margin-top: 10px; /* Space above button group */
+    }
+}
