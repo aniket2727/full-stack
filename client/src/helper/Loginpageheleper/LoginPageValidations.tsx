@@ -16,6 +16,7 @@ const LoginPageValidations = (data: dataPropstype): errortype => {
   const isEmailValid = Emailvalidate(data.email);
   const isPasswordValid = Passwordvalidate(data.password);
 
+  
   if (!isEmailValid) {
     error.email = "Email is not valid";
   }

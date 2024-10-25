@@ -2,6 +2,7 @@ import React, { ChangeEvent, useState, FormEvent } from 'react';
 import BaseButton from '../component/button/BaseButton';
 import LoginPageValidations from '../helper/Loginpageheleper/LoginPageValidations';
 
+
 // Type for login details
 type LoginDetails = {
   email: string;
@@ -29,9 +30,11 @@ const LoginPage: React.FC = () => {
     e.preventDefault(); // Prevent form reload
     console.log('The login data is:', loginDetails);
     
+    
     // Validate form data and set errors
     const errorResponse = LoginPageValidations(loginDetails);
     setErrorState(errorResponse);
+    console.log(errorState)
   };
 
   const handleRegister = () => {
