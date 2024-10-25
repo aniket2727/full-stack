@@ -18,6 +18,7 @@ type ErrorMessages = {
 const LoginPage: React.FC = () => {
   const [loginDetails, setLoginDetails] = useState<LoginDetails>({ email: '', password: '' });
   const [errorState, setErrorState] = useState<ErrorMessages>({});
+  
 
   // Handle input change
   const handleGetData = (e: ChangeEvent<HTMLInputElement>) => {
@@ -28,13 +29,9 @@ const LoginPage: React.FC = () => {
   // Handle form submission
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault(); // Prevent form reload
-    console.log('The login data is:', loginDetails);
-    
-    
-    // Validate form data and set errors
     const errorResponse = LoginPageValidations(loginDetails);
     setErrorState(errorResponse);
-    console.log(errorState)
+
   };
 
   const handleRegister = () => {
@@ -89,7 +86,7 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
 
-        <h1 className="text-center mt-6 text-green-700">Don't have an account? If not please register</h1>
+        <h1 className="text-center mt-6 text-green-700">Don't have an account?  please register and build profile</h1>
 
         {/* Register Button */}
         <div className="flex justify-center mt-4">

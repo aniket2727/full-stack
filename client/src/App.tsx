@@ -4,6 +4,7 @@ import NavbarComponent from "./component/Header/NavbarComponent";
 
 // Lazy load pages for performance optimization
 const LoginPage = lazy(() => import("./pages/LoginPage"));
+const RegistePage=lazy(()=>import('./Registerform/Registerpage'));
 // const HomePage = lazy(() => import("./pages/HomePage")); // Assuming you have a HomePage
 // const NotFoundPage = lazy(() => import("./pages/NotFoundPage")); // Page for 404
 
@@ -22,6 +23,7 @@ function App() {
 
             {/* Route for login page */}
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegistePage/>} />
 
             {/* Route for 404 (page not found) */}
            
