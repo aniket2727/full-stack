@@ -16,16 +16,32 @@ const Registerpage = () => {
     age: '',
     address: '',
     blockNumber: '',
-    village: '',
     gender: '',
     birthDate: ''
   });
 
   const handleCounterValue = (item: number) => {
+    // Prevent moving to the next step if current step is not completed
+    if (item > counter) {
+      if (!isCurrentStepCompleted(counter)) {
+        return; // Prevent moving to next step if the current step is not completed
+      }
+    }
+
     setCounter(prev => Math.max(0, Math.min(prev + item, 2)));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const isCurrentStepCompleted = (currentStep: number) => {
+    // Here you can check if the current step's required fields are filled
+    if (currentStep === 0) {
+      return formData.email && formData.name && formData.password; // Check required fields for First Stage
+    } else if (currentStep === 1) {
+      return formData.aadharCard && formData.mobile && formData.age; // Check required fields for Second Stage
+    }
+    return true; // If it's the last step, consider it completed
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
@@ -44,8 +60,8 @@ const Registerpage = () => {
         {Array(3).fill(null).map((_, item) => (
           <button
             key={item}
-            className={`px-4 py-2 text-white font-semibold rounded-lg ${item === counter ||item<=counter? 'bg-green-500' : 'bg-red-500'}`}
-            onClick={() => setCounter(item)}
+            className={`px-4 py-2 text-white font-semibold rounded-lg ${item === counter || item < counter ? 'bg-green-500' : 'bg-red-500'}`}
+            onClick={() => handleCounterValue(item)} // Use handleCounterValue for navigation
           >
             {item + 1}
           </button>
