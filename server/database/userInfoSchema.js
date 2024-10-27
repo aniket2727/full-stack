@@ -44,7 +44,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
   },
   blockNumber: {
-    type: String,
+    type: Number,
     required: true,
   },
   gender: {
