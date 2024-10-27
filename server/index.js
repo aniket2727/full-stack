@@ -17,12 +17,12 @@ app.use(express.json());
 
 //importing the routes
 const userRoutes=require('./routes/registerRoute');
-
+const loginRoutes=require('./routes/loginRouter');
 
 
 // Use the user routes
-app.use('/api', userRoutes); // All user-related routes will start with /api/users
-
+app.use('/api', userRoutes); 
+app.use('/api', loginRoutes); 
 
 // Start the server
 app.listen(port, () => {
