@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import FirstStageRegisterpage from './FirstStageRegisterpage';
 import SecondStageRegisterpage from './SecondStageRegisterpage';
 import ThirdStageRegisterpage from './ThirdStageRegisterpage';
+import useRegister from './useRegisterApi';
+
 
 const Registerpage = () => {
   const [counter, setCounter] = useState(0);
@@ -19,6 +21,9 @@ const Registerpage = () => {
     gender: '',
     birthDate: ''
   });
+
+  const registerMutation = useRegister();
+
 
   const handleCounterValue = (item: number) => {
     // Prevent moving to the next step if current step is not completed
@@ -52,6 +57,16 @@ const Registerpage = () => {
   const handleSubmit = () => {
     console.log('Form Data:', formData);
     // Here, you can send the formData to the server via an API call
+    registerMutation.mutate(formData, {
+      onSuccess: () => {
+        // Handle successful registration (e.g., show a success message, redirect, etc.)
+        console.log('Registration successful');
+      },
+      onError: (error: any) => {
+        // Handle error during registration
+        console.error('Registration failed:', error);
+      },
+    });
   };
 
   return (
