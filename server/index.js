@@ -14,13 +14,15 @@ app.use(cors());
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Sample GET route that returns a simple JSON response
-app.get('/api/data', (req, res) => {
-  res.json({
-    message: 'Hello, this is your data!',
-    success: true
-  });
-});
+
+//importing the routes
+const userRoutes=require('./routes/registerRoute');
+
+
+
+// Use the user routes
+app.use('/api', userRoutes); // All user-related routes will start with /api/users
+
 
 // Start the server
 app.listen(port, () => {

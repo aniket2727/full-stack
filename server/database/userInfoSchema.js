@@ -1,10 +1,11 @@
-
-
-
 const mongoose = require('mongoose');
 
 // Define the user schema
 const UserSchema = new mongoose.Schema({
+  userId: {
+    type: String, // Use String to match the ObjectId format
+    unique: true, // Ensure userId is unique
+  },
   email: {
     type: String,
     required: true,
@@ -43,7 +44,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
   },
   blockNumber: {
-    type: Number,
+    type: String,
     required: true,
   },
   gender: {
@@ -56,6 +57,12 @@ const UserSchema = new mongoose.Schema({
   },
 }, {
   timestamps: true, // Automatically create `createdAt` and `updatedAt` fields
+});
+
+// Middleware to set userId before saving
+UserSchema.pre('save', function(next) {
+  this.userId = this._id; // Set userId to the document's _id
+  next();
 });
 
 // Create a model based on the schema
