@@ -31,6 +31,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault(); // Prevent form reload
     const errorResponse = LoginPageValidations(loginDetails);
     setErrorState(errorResponse);
+    console.log("login detials ",loginDetails)
 
   };
 
