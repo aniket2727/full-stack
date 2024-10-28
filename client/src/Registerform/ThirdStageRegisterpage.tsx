@@ -6,13 +6,15 @@ type PropsData = {
     blockNumber: string;
     gender: string;
     birthDate: string;
+   
   };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleCounter: (item: number) => void;
   handleSubmit: () => void;
+  errorMessage :string
 };
 
-const ThirdStageRegisterpage: React.FC<PropsData> = ({ formData, handleInputChange, handleCounter, handleSubmit }) => {
+const ThirdStageRegisterpage: React.FC<PropsData> = ({ formData, handleInputChange, handleCounter, handleSubmit,errorMessage }) => {
   const [errors, setErrors] = useState({
     address: '',
     blockNumber: '',
@@ -58,6 +60,7 @@ const ThirdStageRegisterpage: React.FC<PropsData> = ({ formData, handleInputChan
   return (
     <div className="p-6 bg-white rounded-md shadow-lg max-w-md mx-auto">
       <h1 className="text-2xl font-semibold mb-4">Third Stage</h1>
+      {errorMessage && <p className="text-red-500 text-sm mb-4">{errorMessage}</p>}
 
       <div className="space-y-4">
         <div>

@@ -3,7 +3,7 @@ import FirstStageRegisterpage from './FirstStageRegisterpage';
 import SecondStageRegisterpage from './SecondStageRegisterpage';
 import ThirdStageRegisterpage from './ThirdStageRegisterpage';
 import useRegister from './useRegisterApi';
-
+//import { useNavigate } from 'react-router-dom';
 
 const Registerpage = () => {
   const [counter, setCounter] = useState(0);
@@ -54,21 +54,25 @@ const Registerpage = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log('Form Data:', formData);
-    // Here, you can send the formData to the server via an API call
-    registerMutation.mutate(formData, {
-      onSuccess: () => {
-        // Handle successful registration (e.g., show a success message, redirect, etc.)
-        console.log('Registration successful');
-      },
-      onError: (error: any) => {
-        // Handle error during registration
-        console.error('Registration failed:', error);
-      },
-    });
-  };
 
+  //const navigate=useNavigate();
+
+  const [errorMessage, setErrorMessage] = useState('');
+
+const handleSubmit = () => {
+  console.log('Form Data:', formData);
+  registerMutation.mutate(formData, {
+    onSuccess: () => {
+      console.log('Registration successful');
+      setErrorMessage(''); // Clear error message on success
+    },
+    onError: (error: any) => {
+      console.error('Registration failed:', error);
+      setErrorMessage(error.response?.data?.message || 'Registration failed. Please try again.');
+      // Optional: navigate('/login'); // You can choose to navigate or stay on the page
+    },
+  });
+};
   return (
     <>
       <div className="flex justify-center space-x-4 mb-4 mt-10">
@@ -90,8 +94,15 @@ const Registerpage = () => {
           <SecondStageRegisterpage formData={formData} handleInputChange={handleInputChange} handleCounter={handleCounterValue} />
         )}
         {counter === 2 && (
-          <ThirdStageRegisterpage formData={formData} handleInputChange={handleInputChange} handleCounter={handleCounterValue} handleSubmit={handleSubmit} />
-        )}
+  <ThirdStageRegisterpage 
+    formData={formData} 
+    handleInputChange={handleInputChange} 
+    handleCounter={handleCounterValue} 
+    handleSubmit={handleSubmit} 
+    errorMessage={errorMessage} // Pass the error message
+  />
+)}
+
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState, FormEvent } from 'react';
 import { useQueryClient } from 'react-query';
-import axios, { AxiosError } from 'axios'; // Import AxiosError
+import axios from 'axios'; // Import AxiosError
 import useLogin from '../Apis/CustomApis/LoginApis';
 import LoginPageValidations from '../helper/Loginpageheleper/LoginPageValidations'; // Your validation helper
 
