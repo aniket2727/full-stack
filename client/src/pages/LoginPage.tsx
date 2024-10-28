@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useState, FormEvent } from 'react';
-import BaseButton from '../component/button/BaseButton';
-import LoginPageValidations from '../helper/Loginpageheleper/LoginPageValidations';
-
+import { useQueryClient } from 'react-query';
+import axios, { AxiosError } from 'axios'; // Import AxiosError
+import useLogin from '../Apis/CustomApis/LoginApis';
+import LoginPageValidations from '../helper/Loginpageheleper/LoginPageValidations'; // Your validation helper
 
 // Type for login details
 type LoginDetails = {
@@ -18,7 +19,10 @@ type ErrorMessages = {
 const LoginPage: React.FC = () => {
   const [loginDetails, setLoginDetails] = useState<LoginDetails>({ email: '', password: '' });
   const [errorState, setErrorState] = useState<ErrorMessages>({});
-  
+  const queryClient = useQueryClient();
+
+  // Using the custom useLogin hook
+  const { mutate: loginMutate, isLoading, isError, error, isSuccess } = useLogin();
 
   // Handle input change
   const handleGetData = (e: ChangeEvent<HTMLInputElement>) => {
@@ -29,14 +33,31 @@ const LoginPage: React.FC = () => {
   // Handle form submission
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault(); // Prevent form reload
+
+    // Validate login details
     const errorResponse = LoginPageValidations(loginDetails);
     setErrorState(errorResponse);
-    console.log("login detials ",loginDetails)
 
-  };
-
-  const handleRegister = () => {
-    console.log("Register button clicked");
+    // If there are no validation errors, proceed with the login API call
+    if (Object.keys(errorResponse).length === 0) {
+      loginMutate(loginDetails, {
+        onSuccess: (data) => {
+          // Handle successful login
+          console.log('Login successful', data);
+          queryClient.invalidateQueries(['user']); // Optionally refresh user-related queries
+        },
+        onError: (err: unknown) => {
+          // Safely cast error to AxiosError
+          if (axios.isAxiosError(err)) {
+            // Log the specific Axios error message
+            console.error('Login failed:', err.response?.data || err.message);
+          } else {
+            // Handle unexpected errors
+            console.error('An unexpected error occurred:', err);
+          }
+        },
+      });
+    }
   };
 
   return (
@@ -83,22 +104,20 @@ const LoginPage: React.FC = () => {
             type="submit"
             className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
           >
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
+
+          {/* Display error message */}
+          {isError && (
+            <p className="text-red-500 mt-2">
+              {axios.isAxiosError(error)
+                ? error.response?.data?.message || error.message
+                : 'An unexpected error occurred'}
+            </p>
+          )}
+
+          {isSuccess && <p className="text-green-500 mt-2">Login successful!</p>}
         </form>
-
-        <h1 className="text-center mt-6 text-green-700">Don't have an account?  please register and build profile</h1>
-
-        {/* Register Button */}
-        <div className="flex justify-center mt-4">
-          <BaseButton
-            text="register"
-            onClick={handleRegister}
-            color="blue"
-            textColor="white"
-            borderRadius="rounded-lg"
-          />
-        </div>
       </div>
     </div>
   );
