@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const RaiseIssuePage: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,6 +22,10 @@ const RaiseIssuePage: React.FC = () => {
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setIssueDescription(e.target.value);
   };
+
+  const  handleSubmitIssue=()=>{
+    console.log("submitted")
+  }
 
   return (
     <div className="flex flex-col items-start p-8 bg-gray-100 h-screen">
@@ -72,7 +77,7 @@ const RaiseIssuePage: React.FC = () => {
       />
 
       {/* Submit Button */}
-      <button className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">
+      <button  onClick={()=>handleSubmitIssue()} className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">
         Submit Issue
       </button>
     </div>
