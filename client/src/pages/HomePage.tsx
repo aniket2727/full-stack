@@ -7,7 +7,7 @@ const Homepage: React.FC = () => {
             {/* Left-aligned column for buttons */}
             <div className="flex flex-col items-start ml-8 mt-4 space-y-4">
                 {/* Button styles */}
-                <button  onClick={()=>navigate('/issue')} className="w-48 py-3 px-5 text-white bg-blue-500 hover:bg-blue-600 rounded-lg shadow-lg focus:outline-none">
+                <button  onClick={()=>navigate('/raiseissue')} className="w-48 py-3 px-5 text-white bg-blue-500 hover:bg-blue-600 rounded-lg shadow-lg focus:outline-none">
                     Raise Issue
                 </button>
                 <button  onClick={()=>navigate('/tractproject')} className="w-48 py-3 px-5 text-white bg-green-500 hover:bg-green-600 rounded-lg shadow-lg focus:outline-none">
