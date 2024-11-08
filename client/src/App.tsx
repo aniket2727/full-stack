@@ -2,11 +2,14 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavbarComponent from "./component/Header/NavbarComponent";
 
+import LoaderComponent from "./component/LoaderComponent";
+
 // Lazy load pages for performance optimization
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegistePage=lazy(()=>import('./Registerform/Registerpage'));
 const HomePage=lazy(()=>import('./pages/HomePage'));
 const RaiseIssuePage=lazy(()=>import('./pages/RaiseIssuePage'))
+
 // const HomePage = lazy(() => import("./pages/HomePage")); // Assuming you have a HomePage
 // const NotFoundPage = lazy(() => import("./pages/NotFoundPage")); // Page for 404
 
@@ -18,7 +21,7 @@ function App() {
         <NavbarComponent />
 
         {/* Suspense with fallback for lazy loading */}
-        <Suspense fallback={<div style={{color:"green"}}>Loading...</div>}>
+        <Suspense fallback={<LoaderComponent/>}>
           <Routes>
             {/* Route for home page */}
            
