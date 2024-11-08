@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavbarComponent from "./component/Header/NavbarComponent";
 
+// loader as helper
 import LoaderComponent from "./component/LoaderComponent";
 
 // Lazy load pages for performance optimization
