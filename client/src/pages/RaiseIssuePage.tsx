@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Emailvalidate } from '../helper/FormValidations';
-import { Phonenumbervalidate } from '../helper/FormValidations';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useCallback } from 'react';
+import { Emailvalidate, Phonenumbervalidate } from '../helper/FormValidations';
 
 const RaiseIssuePage: React.FC = () => {
   const [name, setName] = useState("");
@@ -10,50 +10,48 @@ const RaiseIssuePage: React.FC = () => {
   const [error, setError] = useState("");
   const [detailederror, setDetailedError] = useState<{ email?: string; name?: string }>({});
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
-
-  const handleProblemChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedProblem(e.target.value);
-  };
-
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handleProblemChange = (e: React.ChangeEvent<HTMLSelectElement>) => setSelectedProblem(e.target.value);
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setIssueDescription(e.target.value);
     setError("");
   };
 
-  const handleSubmitIssue = () => {
+  const validateForm = () => {
     let errors: { email?: string; name?: string } = {};
 
-    // Validate name
     if (!name) errors.name = "Name is required.";
-
-    // Validate email
     if (!email) errors.email = "Email is required.";
     else if (!Emailvalidate(email)) errors.email = "Invalid email format.";
 
-    // Validate problem selection
     if (!selectedProblem) setError("Please select a problem type.");
-
-    // Validate description
     if (!issueDescription) setError("Issue description is required.");
 
     const nameIsInvalid = Phonenumbervalidate(name);
     if (nameIsInvalid) errors.name = "Invalid name format.";
 
-    setDetailedError(errors); // Update error state
+    setDetailedError(errors);
 
-    // If there are no errors, submit the form
-    if (Object.keys(errors).length === 0) {
-      console.log("Form submitted successfully");
-      // You can proceed with your form submission logic here (e.g., sending data to the server)
-    }
+    return Object.keys(errors).length === 0;
   };
+
+  // Step 2: Debounce the handleSubmitIssue function
+  const handleSubmitIssue = useCallback(() => {
+    if (validateForm()) {
+      console.log("Form submitted successfully");
+      // Proceed with form submission logic here (e.g., API call)
+    }
+  }, [name, email, selectedProblem, issueDescription]);
+
+  // Step 3: Set up a debounced submit function
+  const debouncedSubmit = useCallback(() => {
+    const handler = setTimeout(() => {
+      handleSubmitIssue();
+    }, 500); // 500ms debounce delay
+
+    return () => clearTimeout(handler); // Cleanup timeout on unmount or re-render
+  }, [handleSubmitIssue]);
 
   return (
     <div className="flex flex-col items-start p-8 bg-gray-100 min-h-screen">
@@ -107,13 +105,11 @@ const RaiseIssuePage: React.FC = () => {
         className="w-full p-2 min-h-[150px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
         style={{ resize: "vertical" }}
       />
-      {error && issueDescription === "" && (
-        <p className="text-red-500 mt-1">Issue description is required.</p>
-      )}
+      {error && issueDescription === "" && <p className="text-red-500 mt-1">Issue description is required.</p>}
 
       {/* Submit Button */}
       <button
-        onClick={handleSubmitIssue}
+        onClick={debouncedSubmit}
         className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
       >
         Submit Issue
