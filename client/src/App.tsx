@@ -18,7 +18,7 @@ function App() {
         <NavbarComponent />
 
         {/* Suspense with fallback for lazy loading */}
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div style={{color:"green"}}>Loading...</div>}>
           <Routes>
             {/* Route for home page */}
            
