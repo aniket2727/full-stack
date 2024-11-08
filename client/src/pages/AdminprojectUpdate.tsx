@@ -2,6 +2,7 @@ import React, { useState, FormEvent } from 'react';
 
 const AdminProjectTractAddProjectDetails: React.FC = () => {
     const [projectname, setProjectname] = useState<string>('');
+    const [projectmanager, setProjectManager] = useState<string>('');
     const [areaname, setAreaName] = useState<string>('');
     const [projecttype, setProjectType] = useState<string>('');
     const [projectcost, setProjectCost] = useState<string>('');
@@ -15,22 +16,30 @@ const AdminProjectTractAddProjectDetails: React.FC = () => {
         <div>
             <form onSubmit={handleSubmit}>
                 <label>Enter Project Name</label>
-                <input 
-                    placeholder="Enter project name" 
-                    value={projectname} 
-                    onChange={(e) => setProjectname(e.target.value)} 
+                <input
+                    placeholder="Enter project name"
+                    value={projectname}
+                    onChange={(e) => setProjectname(e.target.value)}
                 />
 
+                <label>Enter Project Manager Name</label>
+                <input
+                    placeholder="Enter project manager name"
+                    value={projectmanager}
+                    onChange={(e) => setProjectManager(e.target.value)}
+                />
+
+
                 <label>Enter Area Name</label>
-                <input 
-                    placeholder="Enter area name" 
-                    value={areaname} 
-                    onChange={(e) => setAreaName(e.target.value)} 
+                <input
+                    placeholder="Enter area name"
+                    value={areaname}
+                    onChange={(e) => setAreaName(e.target.value)}
                 />
 
                 <label>Select Project Type</label>
-                <select 
-                    value={projecttype} 
+                <select
+                    value={projecttype}
                     onChange={(e) => setProjectType(e.target.value)}
                 >
                     <option value="construction">Construction</option>
@@ -40,10 +49,10 @@ const AdminProjectTractAddProjectDetails: React.FC = () => {
                 </select>
 
                 <label>Enter Project Cost</label>
-                <input 
-                    placeholder="Enter project cost" 
-                    value={projectcost} 
-                    onChange={(e) => setProjectCost(e.target.value)} 
+                <input
+                    placeholder="Enter project cost"
+                    value={projectcost}
+                    onChange={(e) => setProjectCost(e.target.value)}
                 />
 
                 <button type="submit">Submit</button>
