@@ -1,11 +1,12 @@
-import projectDetailsData from '../database/projectDetailsSchema';
+// projectDetailsController.js
+const ProjectDetailsData = require('../database/projectDetailsSchema');
 
-export const projectDetailsController = async (req, resp) => {
+const projectDetailsController = async (req, resp) => {
     const { projectname, projectmanagername, areaname, projecttype, projectcost } = req.body;
 
     try {
         // Create a new instance of the project details model with data from the request body
-        const projectdetailsSave = new projectDetailsData({
+        const projectdetailsSave = new ProjectDetailsData({
             projectname,
             projectmanagername,
             areaname,
@@ -27,3 +28,5 @@ export const projectDetailsController = async (req, resp) => {
         resp.status(500).json({ message: "Internal server error" });
     }
 };
+
+module.exports = projectDetailsController;

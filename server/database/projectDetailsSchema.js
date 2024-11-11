@@ -1,10 +1,7 @@
-
-
-
-
+// projectDetailsSchema.js
 const mongoose = require('mongoose');
 
-const projectdetailsSchema = new mongoose.Schema({
+const projectDetailsSchema = new mongoose.Schema({
     projectname: {
         type: String,
         required: true,
@@ -27,6 +24,6 @@ const projectdetailsSchema = new mongoose.Schema({
     },
 });
 
-const ProjectDetailModel = mongoose.model('projectdetailsdata', projectdetailsSchema);
+const ProjectDetailsData = mongoose.model('ProjectDetailsData', projectDetailsSchema);
 
-module.exports = { ProjectDetailModel };
+module.exports = ProjectDetailsData;
