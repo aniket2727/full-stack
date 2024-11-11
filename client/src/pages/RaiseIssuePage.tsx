@@ -1,6 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useCallback } from 'react';
 import { Emailvalidate, Phonenumbervalidate } from '../helper/FormValidations';
+import { useProjectMutation } from '../helper/ReactQuaryhelper';
+import { useQueryClient } from 'react-query';
+import axios, { AxiosError } from 'axios';
+import { debounce } from '../utils/debounc';
+import { AddnewIssueApi } from '../Apis/RaiseIssueApi';
 
 const RaiseIssuePage: React.FC = () => {
   const [name, setName] = useState("");
@@ -8,7 +14,12 @@ const RaiseIssuePage: React.FC = () => {
   const [selectedProblem, setSelectedProblem] = useState("");
   const [issueDescription, setIssueDescription] = useState("");
   const [error, setError] = useState("");
+  const [loader, setLoaderFlag] = useState(false);
   const [detailederror, setDetailedError] = useState<{ email?: string; name?: string }>({});
+
+  const queryClient = useQueryClient();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { mutate: RaiseIssueMutate, isLoading, isError, error: mutationError, isSuccess } = useProjectMutation(AddnewIssueApi);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
@@ -36,21 +47,40 @@ const RaiseIssuePage: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // Step 2: Debounce the handleSubmitIssue function
   const handleSubmitIssue = useCallback(() => {
     if (validateForm()) {
       console.log("Form submitted successfully");
-      // Proceed with form submission logic here (e.g., API call)
+
+      if (!Object.keys(error).length) {
+        setLoaderFlag(true);
+
+        RaiseIssueMutate({ name, email, selectedProblem, issueDescription }, {
+          onSuccess: (data) => {
+            console.log('Issue successfully raised:', data);
+            queryClient.invalidateQueries(['projects']);
+            setTimeout(() => {
+              setLoaderFlag(false);
+            }, 1000);
+          },
+          onError: (err: AxiosError | unknown) => {
+            setLoaderFlag(false);
+            if (axios.isAxiosError(err)) {
+              console.error('Error:', err.response?.data || err.message);
+            } else {
+              console.error('An unexpected error occurred:', err);
+            }
+          },
+        });
+      }
     }
   }, [name, email, selectedProblem, issueDescription]);
 
-  // Step 3: Set up a debounced submit function
   const debouncedSubmit = useCallback(() => {
     const handler = setTimeout(() => {
       handleSubmitIssue();
-    }, 500); // 500ms debounce delay
+    }, 500);
 
-    return () => clearTimeout(handler); // Cleanup timeout on unmount or re-render
+    return () => clearTimeout(handler);
   }, [handleSubmitIssue]);
 
   return (

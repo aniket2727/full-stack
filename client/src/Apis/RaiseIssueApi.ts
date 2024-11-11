@@ -1,15 +1,13 @@
+import axios from 'axios';
 
-
-import axios from "axios";
-
-
-type Issuedetailsdata={
-    name:string
+type IssueDetailsData = {
+  name: string;
+  email: string;
+  selectedProblem: string;
+  issueDescription: string;
 };
 
-
-
-export const AddnewIssueApi=async(IssueDetails:Issuedetailsdata)=>{
-    const responce=await axios.post('http://localhost:9009/api/projectdetails', IssueDetails);
-    return responce.data;
-}
+export const AddnewIssueApi = async (issueDetails: IssueDetailsData) => {
+  const response = await axios.post('http://localhost:9009/api/issueadd', issueDetails);
+  return response.data;
+};

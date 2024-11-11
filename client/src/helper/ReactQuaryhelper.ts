@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 interface ApiResponse {
-  // Define the structure of the API response
   data: any;
 }
 
@@ -10,13 +9,13 @@ export const useProjectMutation = (apiCall: (data: any) => Promise<ApiResponse>)
 
   return useMutation(apiCall, {
     onSuccess: () => {
-      // Invalidate or refetch queries here if necessary
-      queryClient.invalidateQueries('projects'); // Adjust query key as needed
+      // Refetch or invalidate any queries related to projects after a successful mutation
+      queryClient.invalidateQueries('projects'); // Adjust this query key as necessary
     },
     onError: (error: any) => {
-      // Handle error: log or show a message
+      // Handle errors here
       console.error('Error adding project details:', error);
-      // Optionally, show a toast or other notification
+      // Optionally, display a toast or notification
     },
   });
 };
