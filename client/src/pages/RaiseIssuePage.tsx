@@ -7,85 +7,96 @@ import { useQueryClient } from 'react-query';
 import axios, { AxiosError } from 'axios';
 import { debounce } from '../utils/debounc';
 import { AddnewIssueApi } from '../Apis/RaiseIssueApi';
+import LoaderComponent from '../component/LoaderComponent';
+
+
+
+interface ApiResponse {
+  message?: string; // Marked as optional to handle cases where 'message' may be missing
+}
+
 
 const RaiseIssuePage: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [selectedProblem, setSelectedProblem] = useState("");
   const [issueDescription, setIssueDescription] = useState("");
-  const [error, setError] = useState("");
-  const [loader, setLoaderFlag] = useState(false);
-  const [detailederror, setDetailedError] = useState<{ email?: string; name?: string }>({});
+  const [loaderflag, setLoaderflag] = useState<boolean>(false);
+  const [resultofapis, setResultofapis] = useState<string | null>(null); // Updated to allow null
+
+  const [detailederror, setDetailedError] = useState<{ api?: string; email?: string; name?: string; problem?: string; description?: string }>({});
 
   const queryClient = useQueryClient();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate: RaiseIssueMutate, isLoading, isError, error: mutationError, isSuccess } = useProjectMutation(AddnewIssueApi);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handleProblemChange = (e: React.ChangeEvent<HTMLSelectElement>) => setSelectedProblem(e.target.value);
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIssueDescription(e.target.value);
-    setError("");
-  };
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setIssueDescription(e.target.value);
 
   const validateForm = () => {
-    let errors: { email?: string; name?: string } = {};
+    let errors: { email?: string; name?: string; problem?: string; description?: string } = {};
 
     if (!name) errors.name = "Name is required.";
+    else if (Phonenumbervalidate(name)) errors.name = "Invalid name format.";
+
     if (!email) errors.email = "Email is required.";
     else if (!Emailvalidate(email)) errors.email = "Invalid email format.";
 
-    if (!selectedProblem) setError("Please select a problem type.");
-    if (!issueDescription) setError("Issue description is required.");
-
-    const nameIsInvalid = Phonenumbervalidate(name);
-    if (nameIsInvalid) errors.name = "Invalid name format.";
+    if (!selectedProblem) errors.problem = "Please select a problem type.";
+    if (!issueDescription) errors.description = "Issue description is required.";
 
     setDetailedError(errors);
-
     return Object.keys(errors).length === 0;
   };
 
   const handleSubmitIssue = useCallback(() => {
     if (validateForm()) {
-      console.log("Form submitted successfully");
-
-      if (!Object.keys(error).length) {
-        setLoaderFlag(true);
-
-        RaiseIssueMutate({ name, email, selectedProblem, issueDescription }, {
-          onSuccess: (data) => {
-            console.log('Issue successfully raised:', data);
+      setLoaderflag(true);
+      RaiseIssueMutate(
+        { name, email, selectedProblem, issueDescription },
+        {
+          onSuccess: (data: unknown) => {
+            const response = data as ApiResponse;
+            if (response.message) {
+              console.log('Issue successfully raised:', response.message);
+              setResultofapis(response.message);
+            } else {
+              console.warn('Unexpected response format:', data);
+              setResultofapis("Issue raised successfully, but no message returned.");
+            }
             queryClient.invalidateQueries(['projects']);
             setTimeout(() => {
-              setLoaderFlag(false);
+              setLoaderflag(false);
             }, 1000);
           },
           onError: (err: AxiosError | unknown) => {
-            setLoaderFlag(false);
+            setLoaderflag(false);
             if (axios.isAxiosError(err)) {
+              setDetailedError((prev) => ({ ...prev, api: err.response?.data || "Error occurred" }));
               console.error('Error:', err.response?.data || err.message);
             } else {
               console.error('An unexpected error occurred:', err);
             }
           },
-        });
-      }
+        }
+      );
+    } else {
+      setLoaderflag(false);
     }
   }, [name, email, selectedProblem, issueDescription]);
 
-  const debouncedSubmit = useCallback(() => {
-    const handler = setTimeout(() => {
-      handleSubmitIssue();
-    }, 500);
+  const debouncedSubmit = useCallback(debounce(handleSubmitIssue, 500), [handleSubmitIssue]);
 
-    return () => clearTimeout(handler);
-  }, [handleSubmitIssue]);
+  if (loaderflag) {
+    return <LoaderComponent />;
+  }
 
   return (
     <div className="flex flex-col items-start p-8 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Raise an Issue</h1>
+      {detailederror.api && <span style={{ color: "red" }}>{detailederror.api}</span>}
+      {resultofapis && <span style={{ color: "green" }}>{resultofapis}</span>}
 
       {/* Name Input */}
       <label className="mb-2 font-medium">Name:</label>
@@ -124,7 +135,7 @@ const RaiseIssuePage: React.FC = () => {
         <option value="payment">Payment Issue</option>
         <option value="other">Other</option>
       </select>
-      {error && selectedProblem === "" && <p className="text-red-500 mb-4">Please select a problem type.</p>}
+      {detailederror.problem && <p className="text-red-500 mb-4">{detailederror.problem}</p>}
 
       {/* Issue Description */}
       <label className="mb-2 font-medium">Describe the Issue:</label>
@@ -135,14 +146,15 @@ const RaiseIssuePage: React.FC = () => {
         className="w-full p-2 min-h-[150px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
         style={{ resize: "vertical" }}
       />
-      {error && issueDescription === "" && <p className="text-red-500 mt-1">Issue description is required.</p>}
+      {detailederror.description && <p className="text-red-500 mt-1">{detailederror.description}</p>}
 
       {/* Submit Button */}
       <button
         onClick={debouncedSubmit}
-        className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+        className={`mt-6 px-6 py-2 ${isLoading ? 'bg-gray-500' : 'bg-blue-500'} text-white rounded-lg hover:bg-blue-600 focus:outline-none`}
+        disabled={isLoading}
       >
-        Submit Issue
+        {isLoading ? 'Submitting...' : 'Submit Issue'}
       </button>
     </div>
   );
