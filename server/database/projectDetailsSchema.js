@@ -6,7 +6,7 @@ const projectDetailsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    projectmanagername: {
+    projectmanager: {
         type: String,
         required: true,
     },

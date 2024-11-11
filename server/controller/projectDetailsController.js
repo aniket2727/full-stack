@@ -2,13 +2,13 @@
 const ProjectDetailsData = require('../database/projectDetailsSchema');
 
 const projectDetailsController = async (req, resp) => {
-    const { projectname, projectmanagername, areaname, projecttype, projectcost } = req.body;
+    const { projectname, projectmanager, areaname, projecttype, projectcost } = req.body;
 
     try {
         // Create a new instance of the project details model with data from the request body
         const projectdetailsSave = new ProjectDetailsData({
             projectname,
-            projectmanagername,
+            projectmanager,
             areaname,
             projecttype,
             projectcost
