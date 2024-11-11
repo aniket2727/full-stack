@@ -22,4 +22,10 @@ export const AdminprojectUpdateValidations=({projectname,projectmanager}:data):b
 };
 
 
+export const StringtoNumber = ({ projectcost }: { projectcost: string }): number => {
+    const parsedNumber = parseInt(projectcost);
+    return isNaN(parsedNumber) ? NaN : parsedNumber;
+};
+
+
 

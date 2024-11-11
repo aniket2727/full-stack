@@ -1,3 +1,9 @@
+
+  
+type typeStringtonumber={
+  projectcost:string
+}
+
 export const Emailvalidate = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -19,3 +25,12 @@ export const Emailvalidate = (email: string): boolean => {
     return phoneRegex.test(phone);
   };
   
+
+export const StringtoNumber=({projectcost}:typeStringtonumber):number|string=>{
+  const result = parseInt(projectcost, 10);
+  if(isNaN(result)){
+      return "Please provide a valid numeric string";
+  }
+
+  return result;
+}
