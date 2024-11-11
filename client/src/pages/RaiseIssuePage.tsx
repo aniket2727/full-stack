@@ -1,6 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useCallback } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useCallback, useEffect } from 'react';
 import { Emailvalidate, Phonenumbervalidate } from '../helper/FormValidations';
 import { useProjectMutation } from '../helper/ReactQuaryhelper';
 import { useQueryClient } from 'react-query';
@@ -8,13 +8,12 @@ import axios, { AxiosError } from 'axios';
 import { debounce } from '../utils/debounc';
 import { AddnewIssueApi } from '../Apis/RaiseIssueApi';
 import LoaderComponent from '../component/LoaderComponent';
-
+import { setEmpty } from '../helper/clearState';
 
 
 interface ApiResponse {
   message?: string; // Marked as optional to handle cases where 'message' may be missing
 }
-
 
 const RaiseIssuePage: React.FC = () => {
   const [name, setName] = useState("");
@@ -23,8 +22,17 @@ const RaiseIssuePage: React.FC = () => {
   const [issueDescription, setIssueDescription] = useState("");
   const [loaderflag, setLoaderflag] = useState<boolean>(false);
   const [resultofapis, setResultofapis] = useState<string | null>(null); // Updated to allow null
-
   const [detailederror, setDetailedError] = useState<{ api?: string; email?: string; name?: string; problem?: string; description?: string }>({});
+  const [showApiError, setShowApiError] = useState(false);
+
+  // UseEffect to hide API error message after successful submission
+  useEffect(() => {
+    if (detailederror.api) {
+      setShowApiError(true); // Show the error message
+      const timer = setTimeout(() => setShowApiError(false), 3000); // Hide after 3 seconds
+      return () => clearTimeout(timer); // Clear timeout on component unmount
+    }
+  }, [detailederror.api, resultofapis]);
 
   const queryClient = useQueryClient();
   const { mutate: RaiseIssueMutate, isLoading, isError, error: mutationError, isSuccess } = useProjectMutation(AddnewIssueApi);
@@ -50,6 +58,14 @@ const RaiseIssuePage: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
+  useEffect(() => {
+    // Clear errors when typing in any input field
+    if (!loaderflag) {
+      setDetailedError({});
+      setResultofapis('');
+    }
+  }, [name, email, issueDescription]);
+
   const handleSubmitIssue = useCallback(() => {
     if (validateForm()) {
       setLoaderflag(true);
@@ -58,13 +74,19 @@ const RaiseIssuePage: React.FC = () => {
         {
           onSuccess: (data: unknown) => {
             const response = data as ApiResponse;
+            console.log(response);
+
+            setEmpty(setName,setEmail,setIssueDescription);
+  
+            // Only set the message from the response, not the entire object
             if (response.message) {
               console.log('Issue successfully raised:', response.message);
-              setResultofapis(response.message);
+              setResultofapis('Issue is raised sucessfully'); // Set only the message, not the entire object
             } else {
               console.warn('Unexpected response format:', data);
               setResultofapis("Issue raised successfully, but no message returned.");
             }
+  
             queryClient.invalidateQueries(['projects']);
             setTimeout(() => {
               setLoaderflag(false);
@@ -95,8 +117,32 @@ const RaiseIssuePage: React.FC = () => {
   return (
     <div className="flex flex-col items-start p-8 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Raise an Issue</h1>
-      {detailederror.api && <span style={{ color: "red" }}>{detailederror.api}</span>}
-      {resultofapis && <span style={{ color: "green" }}>{resultofapis}</span>}
+
+      {/* API Error Message */}
+      {showApiError && (
+        <span
+          style={{
+            // color: "red",
+            // opacity: showApiError ? 1 : 0,
+            transition: "opacity 1s ease-in-out", // Smooth fade-out effect
+          }}
+        >
+          {detailederror.api}
+        </span>
+      )}
+
+      {/* Success Message */}
+      {resultofapis && (
+        <span
+          style={{
+           color: "green",
+            //opacity: showApiError ? 1 : 0,
+            transition: "opacity 1s ease-in-out", // Smooth fade-out effect
+          }}
+        >
+          {resultofapis}
+        </span>
+      )}
 
       {/* Name Input */}
       <label className="mb-2 font-medium">Name:</label>
@@ -151,7 +197,7 @@ const RaiseIssuePage: React.FC = () => {
       {/* Submit Button */}
       <button
         onClick={debouncedSubmit}
-        className={`mt-6 px-6 py-2 ${isLoading ? 'bg-gray-500' : 'bg-blue-500'} text-white rounded-lg hover:bg-blue-600 focus:outline-none`}
+        className={`mt-6 px-6 py-2 ${isLoading ? 'bg-gray-500' : 'bg-blue-500'} text-white rounded-md`}
         disabled={isLoading}
       >
         {isLoading ? 'Submitting...' : 'Submit Issue'}
