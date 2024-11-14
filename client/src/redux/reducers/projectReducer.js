@@ -5,7 +5,7 @@ import {
 } from '../action/projectAction';
 
 const initialState = {
-    projects: [],
+    projects: [],  // This is the slice you're selecting
     loading: false,
     error: null,
 };

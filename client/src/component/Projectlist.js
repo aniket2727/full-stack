@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProjects } from '../redux/action/projectAction';
@@ -15,7 +15,7 @@ const ProjectList = () => {
     const { data, isLoading, error } = useProjectDetails(page, limit);
 
     // Redux State for the projects
-    const { projects, loading, error: reduxError } = useSelector((state) => state);
+    const { projects, loading, error: reduxError } = useSelector((state) => state.projects);
 
     // Fetch data using Redux (if you want to store data in Redux as well)
     const fetchDataFromRedux = () => {
