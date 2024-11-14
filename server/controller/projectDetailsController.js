@@ -1,7 +1,7 @@
 // projectDetailsController.js
 const ProjectDetailsData = require('../database/projectDetailsSchema');
 
-const projectDetailsController = async (req, resp) => {
+exports.projectDetailsController = async (req, resp) => {
     const { projectname, projectmanager, areaname, projecttype, projectcost } = req.body;
 
     try {
@@ -29,4 +29,42 @@ const projectDetailsController = async (req, resp) => {
     }
 };
 
-module.exports = projectDetailsController;
+
+exports.getProjectDetails = async (req, resp) => {
+
+    // Corrected line
+    const page = parseInt(req.query.page) || 1;  // Fix typo from req.quary to req.query
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;  // Calculate how many documents to skip
+
+
+    try {
+        // Fetch the specific set of documents based on pagination parameters
+        const projectData = await ProjectDetailsData.find()
+            .sort({ createdAt: -1 })  // Sort by creation date, newest first
+            .limit(limit)
+            .skip(skip)
+            .lean();
+
+        // Fetch the total count of documents to return the total number of pages
+        const totalDocuments = await ProjectDetailsData.countDocuments();
+        const totalPages = Math.ceil(totalDocuments / limit);
+
+        // Respond with the paginated documents and pagination info
+        resp.status(200).json({
+            data: projectData,
+            pagination: {
+                currentPage: page,
+                totalPages: totalPages,
+                totalDocuments: totalDocuments,
+            }
+        });
+
+    }
+    catch (error) {
+        resp.status(500).json({ message: 'internal server error' });
+        console.log("the error is ", error);
+    }
+
+}
+//module.exports = { projectDetailsController, getProjectDetails };
