@@ -9,8 +9,9 @@ import LoaderComponent from "./component/LoaderComponent";
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegistePage=lazy(()=>import('./Registerform/Registerpage'));
 const HomePage=lazy(()=>import('./pages/HomePage'));
-const RaiseIssuePage=lazy(()=>import('./pages/RaiseIssuePage'))
-const AdminprojectTract=lazy(()=>import('./pages/AdminprojectUpdate'))
+const RaiseIssuePage=lazy(()=>import('./pages/RaiseIssuePage'));
+const AdminprojectTract=lazy(()=>import('./pages/AdminprojectUpdate'));
+const Projectdetails=lazy(()=>import('./component/Projectlist'));
 // const HomePage = lazy(() => import("./pages/HomePage")); // Assuming you have a HomePage
 // const NotFoundPage = lazy(() => import("./pages/NotFoundPage")); // Page for 404
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/register" element={<RegistePage/>} />
             <Route path="/raiseissue" element={<RaiseIssuePage/>} />
             <Route path="/adminproject" element={<AdminprojectTract/>} />
+            <Route path="/tractproject" element={<Projectdetails/>} />
             <Route path="/" element={<HomePage/>} />
 
             {/* Route for 404 (page not found) */}
