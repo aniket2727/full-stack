@@ -43,5 +43,11 @@ export const useAuthHelpers = () => {
         helpers.callRoute("/logout"); // Example route
     };
 
-    return { handleLogin, handleRegister, handleLogout };
+    const handleAdmin: ClickHandler = () => {
+        helpers.callHelper("admin"); // Outputs: "Logout is clicked"
+        helpers.callRoute("/admin"); // Example route
+    };
+
+
+    return { handleLogin, handleRegister, handleLogout ,handleAdmin};
 };

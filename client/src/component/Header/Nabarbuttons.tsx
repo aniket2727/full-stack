@@ -11,12 +11,14 @@ import { debounce } from '../../utils/debounc';
 
 const Nabarbuttons = () => {
 
-    const { handleLogin, handleRegister, handleLogout } = useAuthHelpers();
+    const { handleLogin, handleRegister, handleLogout,handleAdmin } = useAuthHelpers();
 
      // Create debounced versions of the handlers
      const debouncedHandleLogin = debounce(handleLogin, 300); // 300ms delay
      const debouncedHandleRegister = debounce(handleRegister, 300);
      const debouncedHandleLogout = debounce(handleLogout, 300);
+     const debouncedHandleAdmin = debounce(handleAdmin, 300);
+ 
  
   return (
     <div>
@@ -44,6 +46,15 @@ const Nabarbuttons = () => {
                         borderColor='border-white'
                         borderRadius='rounded-lg'
                         onClick={debouncedHandleLogout}
+                    />
+
+                    <BaseButton
+                        text='Admin'
+                        color='red'
+                        textColor='white'
+                        borderColor='border-white'
+                        borderRadius='rounded-lg'
+                        onClick={debouncedHandleAdmin}
                     />
                 </div>
     </div>
