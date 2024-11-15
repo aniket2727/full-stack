@@ -23,11 +23,18 @@ const loginUser = async (req, res) => {
         // Generate a token
         const token = jwt.sign({ userId: user._id }, 'your_jwt_secret_key', { expiresIn: '1h' }); // Replace with your secret key
 
-        // Set the token in a cookie
-        res.cookie('token', token, { httpOnly: true, secure: false }); // Use secure: true in production with HTTPS
-
-        // Login successful
-        res.status(200).json({ message: 'Login successful', userId: user.userId });
+        res.cookie('token', token, {
+            httpOnly: true,  // Prevent access by JavaScript
+            secure: process.env.NODE_ENV === 'production',  // Use secure cookies in production
+            sameSite: 'Strict',  // Prevent CSRF attacks
+            maxAge: 3600000,  // 1 hour in milliseconds
+        });
+        res.status(200).json({
+            message: 'Login successful',
+            token, // Optional, if you want to return the token directly to the frontend
+            userId: user.userId,
+        });
+        
     } catch (error) {
         res.status(500).json({ message: 'Error logging in user', error: error.message });
     }
