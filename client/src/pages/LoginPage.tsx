@@ -3,7 +3,7 @@ import { useQueryClient } from 'react-query';
 import axios from 'axios'; // Import AxiosError
 import useLogin from '../Apis/CustomApis/LoginApis';
 import LoginPageValidations from '../helper/Loginpageheleper/LoginPageValidations'; // Your validation helper
-
+import { useNavigate } from 'react-router-dom';
 // Type for login details
 type LoginDetails = {
   email: string;
@@ -16,10 +16,15 @@ type ErrorMessages = {
   password?: string;
 };
 
+
+
 const LoginPage: React.FC = () => {
   const [loginDetails, setLoginDetails] = useState<LoginDetails>({ email: '', password: '' });
   const [errorState, setErrorState] = useState<ErrorMessages>({});
   const queryClient = useQueryClient();
+  
+  //navigtion
+  const navigate=useNavigate()
 
   // Using the custom useLogin hook
   const { mutate: loginMutate, isLoading, isError, error, isSuccess } = useLogin();
@@ -44,6 +49,7 @@ const LoginPage: React.FC = () => {
         onSuccess: (data) => {
           // Handle successful login
           console.log('Login successful', data);
+          navigate('/')
           queryClient.invalidateQueries(['user']); // Optionally refresh user-related queries
         },
         onError: (err: unknown) => {
