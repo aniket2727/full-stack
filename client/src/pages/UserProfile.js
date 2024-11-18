@@ -11,8 +11,7 @@ const UserProfile = () => {
       <p>Name: {user.name}</p>
       <p>Email: {user.email}</p>
       <p>User ID: {user.id}</p>
-      <p>Token: {user.token}</p>
-
+    
       {/* Access additional user details */}
       <div>
         <h2 className="mt-4 text-lg font-semibold">Additional Details</h2>
