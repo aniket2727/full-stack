@@ -28,9 +28,20 @@ const useHelper = () => {
 export const useAuthHelpers = () => {
     const helpers = useHelper();
 
-    const handleLogin: ClickHandler = () => {
+    const handleLogin = async (): Promise<{ name: string; email: string; token: string; id: string }> => {
         helpers.callHelper("Login"); // Outputs: "Login is clicked"
         helpers.callRoute("/login"); // Example route
+        
+        // Simulate fetching user data
+        const userData = {
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+            token: 'sampletoken',
+            id: '12345'
+        };
+        
+        // Return user data for further processing
+        return userData;
     };
 
     const handleRegister: ClickHandler = () => {
@@ -44,10 +55,9 @@ export const useAuthHelpers = () => {
     };
 
     const handleAdmin: ClickHandler = () => {
-        helpers.callHelper("admin"); // Outputs: "Logout is clicked"
+        helpers.callHelper("admin"); // Outputs: "admin is clicked"
         helpers.callRoute("/admin"); // Example route
     };
 
-
-    return { handleLogin, handleRegister, handleLogout ,handleAdmin};
+    return { handleLogin, handleRegister, handleLogout, handleAdmin };
 };
