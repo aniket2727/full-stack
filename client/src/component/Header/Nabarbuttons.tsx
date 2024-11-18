@@ -1,10 +1,14 @@
 // src/components/Navbar/Nabarbuttons.tsx
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import BaseButton from '../button/BaseButton';
-import { setUser, clearUser } from '../../redux/userSlice'; // Import actions
-import { useAuthHelpers } from './HeaderHealper';
+import { useSelector } from 'react-redux';
+import BaseButton from '../button/BaseButton'; 
+import { setUser, clearUser } from '../../redux/userSlice'; 
+import { useAuthHelpers } from './HeaderHealper'; 
 import { debounce } from '../../utils/debounc';
+import { FaUserCircle } from 'react-icons/fa'; // Font Awesome User Circle icon
+
+// Import Material-UI Account Circle Icon
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // Define the type for user data returned from handleLogin
 interface UserData {
@@ -25,16 +29,21 @@ interface RootState {
   };
 }
 
-const Nabarbuttons: React.FC = () => {
+interface NabarbuttonsProps {
+  isAuthenticated: boolean;
+  dispatch: React.Dispatch<any>; // Type for dispatch
+}
+
+const Nabarbuttons: React.FC<NabarbuttonsProps> = ({ isAuthenticated, dispatch }) => {
   const { handleLogin, handleRegister, handleLogout, handleAdmin } = useAuthHelpers();
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   // Get the current authentication state from Redux
-  const { isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { isAuthenticated: reduxIsAuthenticated } = useSelector((state: RootState) => state.user);
 
   // Create debounced versions of the handlers
   const debouncedHandleLogin = debounce(async () => {
-    const userData: UserData = await handleLogin(); // Now handleLogin returns user data
+    const userData: UserData = await handleLogin(); 
     if (userData) {
       dispatch(setUser({
         userdata: userData,
@@ -42,12 +51,12 @@ const Nabarbuttons: React.FC = () => {
         userId: userData.id
       }));
     }
-  }, 300); // 300ms delay
+  }, 300); 
 
   const debouncedHandleRegister = debounce(handleRegister, 300);
-  
+
   const debouncedHandleLogout = debounce(() => {
-    dispatch(clearUser()); // Dispatch clearUser action to reset state
+    dispatch(clearUser()); 
     handleLogout();
   }, 300);
 
@@ -56,7 +65,7 @@ const Nabarbuttons: React.FC = () => {
   return (
     <div>
       <div className="button-container space-x-4">
-        {!isAuthenticated ? (
+        {!reduxIsAuthenticated ? (
           <>
             <BaseButton
               text="Login"
@@ -85,7 +94,8 @@ const Nabarbuttons: React.FC = () => {
               borderRadius="rounded-lg"
               onClick={debouncedHandleLogout}
             />
-            {isAuthenticated && (
+            {reduxIsAuthenticated && (
+                <>
               <BaseButton
                 text="Admin"
                 color="red"
@@ -94,6 +104,11 @@ const Nabarbuttons: React.FC = () => {
                 borderRadius="rounded-lg"
                 onClick={debouncedHandleAdmin}
               />
+              <div className="flex items-center space-x-2">
+              <AccountCircleIcon style={{ fontSize: 30, color: 'white' }} />
+              <span className="text-white">Profile</span>
+            </div>
+            </>
             )}
           </>
         )}
