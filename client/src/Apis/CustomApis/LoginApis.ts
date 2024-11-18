@@ -1,6 +1,8 @@
 // src/hooks/useLogin.ts
 import { useMutation } from 'react-query';
 import axios, { AxiosError } from 'axios';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/userSlice'; // Import Redux action
 
 // Type for login details
 type LoginDetails = {
@@ -10,11 +12,21 @@ type LoginDetails = {
 
 // Type for the API response
 type LoginResponse = {
+  message: string;
   token: string;
-  user: {
-    id: string;
+  userId: string;
+  userdata: {
     name: string;
     email: string;
+    aadharCard?: string;
+    address?: string;
+    age?: number;
+    gender?: string;
+    mobile?: string;
+    birthDate?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    // Add other fields as needed
   };
 };
 
@@ -33,10 +45,13 @@ const loginApi = async (loginDetails: LoginDetails): Promise<LoginResponse> => {
 
 // Custom hook
 const useLogin = () => {
+  const dispatch = useDispatch(); // Redux dispatcher
+
   return useMutation<LoginResponse, AxiosError<ApiError>, LoginDetails>(loginApi, {
     onSuccess: (data) => {
       console.log('Login successful:', data);
-      // Perform additional actions after a successful login
+      // Dispatch data to Redux store
+      dispatch(setUser(data));
     },
     onError: (error) => {
       console.error('Login failed:', error.response?.data.message || error.message);

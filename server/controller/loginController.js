@@ -33,6 +33,7 @@ const loginUser = async (req, res) => {
             message: 'Login successful',
             token, // Optional, if you want to return the token directly to the frontend
             userId: user.userId,
+            userdata:user,
         });
         
     } catch (error) {

@@ -1,5 +1,4 @@
 import { combineReducers } from 'redux';
-import {thunk} from 'redux-thunk'; // Correct import for thunk middleware
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // Use localStorage for persistence
@@ -27,8 +26,11 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }).concat(thunk),
+    getDefaultMiddleware({ serializableCheck: false }), // Disable serializableCheck for redux-persist
 });
+
+// Infer RootState from the store
+//export type RootState = ReturnType<typeof store.getState>; // Add this line to export RootState
 
 export const persistor = persistStore(store);
 export default store;
